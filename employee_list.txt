@@ -1,0 +1,6 @@
+me;group0,group1
+devops; group2
+hng11;allgroup, group3
+hng8;allgroup2,group3
+hng3;allgroup2,group9
+hng7;allgroup, group3

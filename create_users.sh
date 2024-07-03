@@ -20,10 +20,10 @@ PASSWORD_FILE="/var/secure/user_passwords.txt"
 
 # Ensure the log and password files exist
 sudo touch $LOG_FILE
-sudo chmod 777 $LOG_FILE
+sudo chmod 666 $LOG_FILE
 mkdir -p /var/secure
 sudo touch $PASSWORD_FILE
-sudo chmod 777 $PASSWORD_FILE
+sudo chmod 666 $PASSWORD_FILE
 
 # Function to generate a random password
 generate_password() {
@@ -43,24 +43,24 @@ while IFS=';' read -r username groups || [ -n "$username" ]; do
     password=$(generate_password)
     echo "$username:$password" | sudo chpasswd
     echo "$username:$password" >> $PASSWORD_FILE
-    echo "Password for user $username set." | sudo tee -a $LOG_FILE
+    echo "Password for user $username set." | tee -a $LOG_FILE
 
     # Set ownership and permissions for the home directory
     sudo chown "$username:$username" /home/$username
     sudo chmod 700 /home/$username
-    echo "Home directory permissions set for $username." | sudo tee -a $LOG_FILE
+    echo "Home directory permissions set for $username." | tee -a $LOG_FILE
 
     # Handle groups
     IFS=',' read -ra group_list <<< "$groups"
     for group in "${group_list[@]}"; do
       if getent group "$group" &>/dev/null; then
-        echo "Group $group already exists." | sudo tee -a $LOG_FILE
+        echo "Group $group already exists." | tee -a $LOG_FILE
       else
         sudo groupadd "$group"
-        echo "Created group $group." | sudo tee -a $LOG_FILE
+        echo "Created group $group." | tee -a $LOG_FILE
       fi
       sudo usermod -aG "$group" "$username"
-      echo "Added user $username to group $group." | sudo tee -a $LOG_FILE
+      echo "Added user $username to group $group." | tee -a $LOG_FILE
     done
   fi
 done < "$USER_FILE"
